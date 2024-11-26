@@ -1,5 +1,5 @@
-import React from 'react';
 import { Plugin } from "@pdfme/common";
+import React from "react";
 interface PluginIconProps {
     plugin: Plugin<any>;
     label: string;
