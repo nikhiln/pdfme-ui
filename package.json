@@ -64,6 +64,15 @@
     "vite-plugin-css-injected-by-js": "^3.3.0",
     "vite-tsconfig-paths": "^4.2.1"
   },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "@pdfme/common": "latest",
+    "@pdfme/schemas": "latest"
+  },
   "jest": {
     "setupFiles": [
       "jest-canvas-mock"
