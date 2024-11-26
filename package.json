@@ -1,5 +1,5 @@
 {
-  "name": "@pdfme/ui",
+  "name": "pdfme-ui",
   "version": "1.0.0",
   "sideEffects": false,
   "license": "MIT",
