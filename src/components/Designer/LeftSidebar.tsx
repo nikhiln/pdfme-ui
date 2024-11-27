@@ -109,6 +109,7 @@ const LeftSidebar = ({
           }}
           allowClear
           placeholder="Search..."
+          size="middle"
         />
       </div>
 
@@ -131,7 +132,7 @@ const LeftSidebar = ({
                 padding: "0px",
               }}
             >
-              <PluginIcon plugin={plugin} label={label} size={16} />
+              <PluginIcon plugin={plugin} label={label} />
             </Button>
           </Draggable>
         );
