@@ -1,28 +1,28 @@
-import FormRender, { useForm } from "form-render";
-import React, { useRef, useContext, useState, useEffect } from "react";
 import type {
   ChangeSchemaItem,
   Dict,
-  SchemaForUI,
-  PropPanelWidgetProps,
   PropPanelSchema,
+  PropPanelWidgetProps,
+  SchemaForUI,
 } from "@pdfme/common";
-import type { SidebarProps } from "../../../../types";
+import { Button, Divider, Typography, theme } from "antd";
+import FormRender, { useForm } from "form-render";
 import { Menu } from "lucide-react";
-import {
-  I18nContext,
-  PluginsRegistry,
-  OptionsContext,
-} from "../../../../contexts";
-import { getSidebarContentHeight, debounce } from "../../../../helper";
-import { theme, Typography, Button, Divider } from "antd";
-import AlignWidget from "./AlignWidget";
-import WidgetRenderer from "./WidgetRenderer";
-import ButtonGroupWidget from "./ButtonGroupWidget";
 import {
   InternalNamePath,
   ValidateErrorEntity,
 } from "rc-field-form/es/interface";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  I18nContext,
+  OptionsContext,
+  PluginsRegistry,
+} from "../../../../contexts";
+import { debounce, getSidebarContentHeight } from "../../../../helper";
+import type { SidebarProps } from "../../../../types";
+import AlignWidget from "./AlignWidget";
+import ButtonGroupWidget from "./ButtonGroupWidget";
+import WidgetRenderer from "./WidgetRenderer";
 
 const { Text } = Typography;
 
@@ -226,12 +226,7 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
           widget: "select",
           placeholder: "Select Option",
           props: {
-            options: [
-              { label: "Hot Water", value: "Hot Water" },
-              { label: "Heat", value: "Heat" },
-              { label: "Electricity", value: "Electricity" },
-              { label: "Gas", value: "Gas" },
-            ],
+            options: valueOptions,
           },
           span: 12,
         },
