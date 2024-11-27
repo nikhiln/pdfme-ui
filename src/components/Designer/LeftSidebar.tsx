@@ -102,7 +102,7 @@ const LeftSidebar = ({
         overflow: isDragging ? "visible" : "auto",
       }}
     >
-      <div style={{ height: "2rem", padding: "8px", display: "flex" }}>
+      <div style={{ padding: "8px", display: "flex" }}>
         <Input
           onChange={(e) => {
             setSearch(e.target.value);
