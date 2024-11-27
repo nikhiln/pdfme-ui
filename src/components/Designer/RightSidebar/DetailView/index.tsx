@@ -1,20 +1,40 @@
-import FormRender, { useForm } from 'form-render';
-import React, { useRef, useContext, useState, useEffect } from 'react';
-import type { ChangeSchemaItem, Dict, SchemaForUI, PropPanelWidgetProps, PropPanelSchema } from '@pdfme/common';
-import type { SidebarProps } from '../../../../types';
-import { Menu } from 'lucide-react';
-import { I18nContext, PluginsRegistry, OptionsContext } from '../../../../contexts';
-import { getSidebarContentHeight, debounce } from '../../../../helper';
-import { theme, Typography, Button, Divider } from 'antd';
-import AlignWidget from './AlignWidget';
-import WidgetRenderer from './WidgetRenderer';
-import ButtonGroupWidget from './ButtonGroupWidget';
-import { InternalNamePath, ValidateErrorEntity } from "rc-field-form/es/interface";
+import FormRender, { useForm } from "form-render";
+import React, { useRef, useContext, useState, useEffect } from "react";
+import type {
+  ChangeSchemaItem,
+  Dict,
+  SchemaForUI,
+  PropPanelWidgetProps,
+  PropPanelSchema,
+} from "@pdfme/common";
+import type { SidebarProps } from "../../../../types";
+import { Menu } from "lucide-react";
+import {
+  I18nContext,
+  PluginsRegistry,
+  OptionsContext,
+} from "../../../../contexts";
+import { getSidebarContentHeight, debounce } from "../../../../helper";
+import { theme, Typography, Button, Divider } from "antd";
+import AlignWidget from "./AlignWidget";
+import WidgetRenderer from "./WidgetRenderer";
+import ButtonGroupWidget from "./ButtonGroupWidget";
+import {
+  InternalNamePath,
+  ValidateErrorEntity,
+} from "rc-field-form/es/interface";
 
 const { Text } = Typography;
 
-type DetailViewProps = Pick<SidebarProps,
-  'size' | 'schemas' | 'schemasList' | 'pageSize' | 'changeSchemas' | 'activeElements' | 'deselectSchema'
+type DetailViewProps = Pick<
+  SidebarProps,
+  | "size"
+  | "schemas"
+  | "schemasList"
+  | "pageSize"
+  | "changeSchemas"
+  | "activeElements"
+  | "deselectSchema"
 > & {
   activeSchema: SchemaForUI;
 };
@@ -22,7 +42,8 @@ type DetailViewProps = Pick<SidebarProps,
 const DetailView = (props: DetailViewProps) => {
   const { token } = theme.useToken();
 
-  const { size, schemasList, changeSchemas, deselectSchema, activeSchema } = props;
+  const { size, schemasList, changeSchemas, deselectSchema, activeSchema } =
+    props;
   const form = useForm();
 
   const i18n = useContext(I18nContext);
@@ -37,9 +58,13 @@ const DetailView = (props: DetailViewProps) => {
     const newWidgets: typeof widgets = {
       AlignWidget: (p) => <AlignWidget {...p} {...props} options={options} />,
       Divider: () => (
-        <Divider style={{ marginTop: token.marginXS, marginBottom: token.marginXS }} />
+        <Divider
+          style={{ marginTop: token.marginXS, marginBottom: token.marginXS }}
+        />
       ),
-      ButtonGroup: (p) => <ButtonGroupWidget {...p} {...props} options={options} />,
+      ButtonGroup: (p) => (
+        <ButtonGroupWidget {...p} {...props} options={options} />
+      ),
     };
     for (const plugin of Object.values(pluginsRegistry)) {
       const widgets = plugin?.propPanel.widgets || {};
@@ -61,11 +86,11 @@ const DetailView = (props: DetailViewProps) => {
 
   useEffect(() => {
     const values: any = { ...activeSchema };
-    values.editable = !(values.readOnly)
+    values.editable = !values.readOnly;
     form.setValues(values);
   }, [activeSchema, form]);
 
-  useEffect(() => form.resetFields(), [activeSchema.id])
+  useEffect(() => form.resetFields(), [activeSchema.id]);
 
   useEffect(() => {
     uniqueSchemaName.current = (value: string): boolean => {
@@ -82,32 +107,44 @@ const DetailView = (props: DetailViewProps) => {
 
   const uniqueSchemaName = useRef((value: string): boolean => true);
 
-  const validateUniqueSchemaName = (_: any, value: string): boolean => uniqueSchemaName.current(value)
+  const validateUniqueSchemaName = (_: any, value: string): boolean =>
+    uniqueSchemaName.current(value);
 
   const handleWatch = debounce((formSchema: any) => {
-    const formAndSchemaValuesDiffer = (formValue: any, schemaValue: any): boolean => {
-      if (typeof formValue === 'object') {
+    const formAndSchemaValuesDiffer = (
+      formValue: any,
+      schemaValue: any
+    ): boolean => {
+      if (typeof formValue === "object") {
         return JSON.stringify(formValue) !== JSON.stringify(schemaValue);
       }
       return formValue !== schemaValue;
-    }
+    };
 
     let changes: ChangeSchemaItem[] = [];
     for (const key in formSchema) {
-      if (['id', 'content'].includes(key)) continue;
+      if (["id", "content"].includes(key)) continue;
 
       let value = formSchema[key];
       if (formAndSchemaValuesDiffer(value, (activeSchema as any)[key])) {
         // FIXME memo: https://github.com/pdfme/pdfme/pull/367#issuecomment-1857468274
-        if (value === null && ['rotate', 'opacity'].includes(key)) {
+        if (value === null && ["rotate", "opacity"].includes(key)) {
           value = undefined;
         }
 
-        if (key === 'editable') {
+        if (key === "editable") {
           const readOnlyValue = !value;
-          changes.push({ key: 'readOnly', value: readOnlyValue, schemaId: activeSchema.id });
+          changes.push({
+            key: "readOnly",
+            value: readOnlyValue,
+            schemaId: activeSchema.id,
+          });
           if (readOnlyValue) {
-            changes.push({ key: 'required', value: false, schemaId: activeSchema.id });
+            changes.push({
+              key: "required",
+              value: false,
+              schemaId: activeSchema.id,
+            });
           }
           continue;
         }
@@ -118,15 +155,18 @@ const DetailView = (props: DetailViewProps) => {
 
     if (changes.length) {
       // Only commit these schema changes if they have passed form validation
-      form.validateFields()
+      form
+        .validateFields()
         .then(() => changeSchemas(changes))
         .catch((reason: ValidateErrorEntity) => {
           if (reason.errorFields.length) {
-            changes = changes.filter((change: ChangeSchemaItem) => !reason.errorFields.find((field: {
-              name: InternalNamePath;
-              errors: string[];
-            }) => field.name.includes(change.key)
-            ));
+            changes = changes.filter(
+              (change: ChangeSchemaItem) =>
+                !reason.errorFields.find(
+                  (field: { name: InternalNamePath; errors: string[] }) =>
+                    field.name.includes(change.key)
+                )
+            );
           }
           if (changes.length) {
             changeSchemas(changes);
@@ -150,71 +190,127 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
     value: value?.propPanel.defaultSchema.type,
   }));
   const defaultSchema = activePlugin.propPanel.defaultSchema;
+  const valueOptions = defaultSchema?.valueOptions || [];
+  const renderOptions = defaultSchema?.displayTypes || [];
 
   const propPanelSchema: PropPanelSchema = {
-    type: 'object',
+    type: "object",
     column: 2,
     properties: {
       type: {
-        title: i18n('type'),
-        type: 'string',
-        widget: 'select',
+        title: i18n("type"),
+        type: "string",
+        widget: "select",
         props: { options: typeOptions },
         required: true,
         span: 12,
       },
       name: {
-        title: i18n('fieldName'),
-        type: 'string',
+        title: i18n("fieldName"),
+        type: "string",
         required: true,
         span: 12,
-        rules: [{
-          validator: validateUniqueSchemaName,
-          message: i18n('validation.uniqueName'),
-        }],
-        props: { autoComplete: "off" }
+        rules: [
+          {
+            validator: validateUniqueSchemaName,
+            message: i18n("validation.uniqueName"),
+          },
+        ],
+        props: { autoComplete: "off" },
+        hidden: Boolean(defaultSchema?.name),
       },
-      editable: { title: i18n('editable'), type: 'boolean', span: 8, hidden: defaultSchema?.readOnly !== undefined },
-      required: { title: i18n('required'), type: 'boolean', span: 16, hidden: "{{!formData.editable}}" },
-      '-': { type: 'void', widget: 'Divider' },
-      align: { title: i18n('align'), type: 'void', widget: 'AlignWidget' },
+      ...(valueOptions.length && {
+        value: {
+          title: "Options",
+          type: "string",
+          widget: "select",
+          placeholder: "Select Option",
+          props: {
+            options: [
+              { label: "Hot Water", value: "Hot Water" },
+              { label: "Heat", value: "Heat" },
+              { label: "Electricity", value: "Electricity" },
+              { label: "Gas", value: "Gas" },
+            ],
+          },
+          span: 12,
+        },
+      }),
+      ...(renderOptions.length && {
+        displayType: {
+          title: "Render As",
+          type: "string",
+          widget: "select",
+          placeholder: "Select Type",
+          props: { options: renderOptions },
+          span: 12,
+        },
+      }),
+      editable: {
+        title: i18n("editable"),
+        type: "boolean",
+        span: 8,
+        hidden: defaultSchema?.readOnly !== undefined,
+      },
+      required: {
+        title: i18n("required"),
+        type: "boolean",
+        span: 16,
+        hidden: defaultSchema?.readOnly !== undefined,
+      },
+      "-": { type: "void", widget: "Divider" },
+      align: { title: i18n("align"), type: "void", widget: "AlignWidget" },
       position: {
-        type: 'object',
-        widget: 'card',
+        type: "object",
+        widget: "card",
         properties: {
-          x: { title: 'X', type: 'number', widget: 'inputNumber', required: true, span: 8, min: 0 },
-          y: { title: 'Y', type: 'number', widget: 'inputNumber', required: true, span: 8, min: 0 },
-        }
+          x: {
+            title: "X",
+            type: "number",
+            widget: "inputNumber",
+            required: true,
+            span: 8,
+            min: 0,
+          },
+          y: {
+            title: "Y",
+            type: "number",
+            widget: "inputNumber",
+            required: true,
+            span: 8,
+            min: 0,
+          },
+        },
       },
       width: {
-        title: i18n('width'),
-        type: 'number',
-        widget: 'inputNumber',
+        title: i18n("width"),
+        type: "number",
+        widget: "inputNumber",
         required: true,
         span: 6,
         props: { min: 0 },
       },
       height: {
-        title: i18n('height'),
-        type: 'number',
-        widget: 'inputNumber',
+        title: i18n("height"),
+        type: "number",
+        widget: "inputNumber",
         required: true,
         span: 6,
         props: { min: 0 },
       },
       rotate: {
-        title: i18n('rotate'),
-        type: 'number',
-        widget: 'inputNumber',
+        title: i18n("rotate"),
+        type: "number",
+        widget: "inputNumber",
         disabled: defaultSchema?.rotate === undefined,
         max: 360,
         props: { min: 0 },
         span: 6,
       },
       opacity: {
-        title: i18n('opacity'),
-        type: 'number',
-        widget: 'inputNumber',
+        title: i18n("opacity"),
+        type: "number",
+        widget: "inputNumber",
         disabled: defaultSchema?.opacity === undefined,
         props: { step: 0.1, min: 0, max: 1 },
         span: 6,
@@ -222,7 +318,7 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
     },
   };
 
-  if (typeof activePropPanelSchema === 'function') {
+  if (typeof activePropPanelSchema === "function") {
     const { schemasList: _, ...propPanelProps } = props;
 
     const apps =
@@ -234,49 +330,55 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
       }) || {};
     propPanelSchema.properties = {
       ...propPanelSchema.properties,
-      ...(Object.keys(apps).length === 0 ? {} : { '--': { type: 'void', widget: 'Divider' } }),
+      ...(Object.keys(apps).length === 0
+        ? {}
+        : { "--": { type: "void", widget: "Divider" } }),
       ...apps,
     };
   } else {
     const apps = activePropPanelSchema || {};
     propPanelSchema.properties = {
       ...propPanelSchema.properties,
-      ...(Object.keys(apps).length === 0 ? {} : { '--': { type: 'void', widget: 'Divider' } }),
+      ...(Object.keys(apps).length === 0
+        ? {}
+        : { "--": { type: "void", widget: "Divider" } }),
       ...apps,
     };
   }
 
   return (
     <div>
-      <div style={{ height: 40, display: 'flex', alignItems: 'center' }}>
+      <div style={{ height: 40, display: "flex", alignItems: "center" }}>
         <Button
           style={{
-            position: 'absolute',
+            position: "absolute",
             zIndex: 100,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={deselectSchema}
           icon={<Menu strokeWidth={1.5} size={20} />}
         />
-        <Text strong style={{ textAlign: 'center', width: '100%' }}>
-          {i18n('editField')}
+        <Text strong style={{ textAlign: "center", width: "100%" }}>
+          {i18n("editField")}
         </Text>
       </div>
-      <Divider style={{ marginTop: token.marginXS, marginBottom: token.marginXS }} />
+      <Divider
+        style={{ marginTop: token.marginXS, marginBottom: token.marginXS }}
+      />
       <div
         style={{
           height: getSidebarContentHeight(size.height),
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         <FormRender
           form={form}
           schema={propPanelSchema}
           widgets={widgets}
-          watch={{ '#': handleWatch }}
+          watch={{ "#": handleWatch }}
           locale="en-US"
         />
       </div>
@@ -284,8 +386,14 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
   );
 };
 
-const propsAreUnchanged = (prevProps: DetailViewProps, nextProps: DetailViewProps) => {
-  return JSON.stringify(prevProps.activeSchema) == JSON.stringify(nextProps.activeSchema);
+const propsAreUnchanged = (
+  prevProps: DetailViewProps,
+  nextProps: DetailViewProps
+) => {
+  return (
+    JSON.stringify(prevProps.activeSchema) ==
+    JSON.stringify(nextProps.activeSchema)
+  );
 };
 
 export default React.memo(DetailView, propsAreUnchanged);

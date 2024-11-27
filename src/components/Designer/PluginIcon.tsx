@@ -34,43 +34,66 @@ const getWithModifiedSize = (
   );
 
   return (
-    <Tooltip title={label}>
-      <div
-        style={styles}
-        dangerouslySetInnerHTML={{ __html: doc.body.innerHTML }}
-      />
-    </Tooltip>
+    <div
+      style={styles}
+      dangerouslySetInnerHTML={{ __html: doc.body.innerHTML }}
+    />
   );
 };
 
 const PluginIcon = (props: PluginIconProps) => {
   const { plugin, label, size, styles } = props;
-  const { token } = theme.useToken();
   const options = useContext(OptionsContext);
   const icon =
     options.icons?.[plugin.propPanel.defaultSchema.type] ?? plugin.icon;
   const iconStyles = {
-    ...styles,
-    color: token.colorText,
+    color: "inherit",
     display: "flex",
     justifyContent: "center",
+    marginRight: "4px",
   };
 
-  if (icon) {
-    if (size) {
-      return getWithModifiedSize(icon, label, size, iconStyles);
-    }
-    return (
-      <Tooltip title={label}>
-        <div style={iconStyles} dangerouslySetInnerHTML={{ __html: icon }} />
-      </Tooltip>
-    );
-  }
+  const textStyles = {
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    fontSize: 12,
+    flexShrink: 1,
+    minWidth: 0,
+  };
+
+  const renderedIcon = icon ? (
+    size ? (
+      getWithModifiedSize(icon, label, size, iconStyles)
+    ) : (
+      <div style={iconStyles} dangerouslySetInnerHTML={{ __html: icon }} />
+    )
+  ) : undefined;
 
   return (
-    <div style={{ ...styles, overflow: "hidden", fontSize: 10 }}>
-      <Tooltip title={label}>{label}</Tooltip>
-    </div>
+    <Tooltip
+      title={label}
+      destroyTooltipOnHide
+      overlayStyle={{
+        fontSize: "12px",
+      }}
+      arrow={false}
+    >
+      <div
+        style={{
+          ...styles,
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          width: "100%",
+          padding: "8px",
+        }}
+      >
+        {renderedIcon}
+        <div style={{ ...textStyles }}>{label}</div>
+      </div>
+    </Tooltip>
   );
 };
 
