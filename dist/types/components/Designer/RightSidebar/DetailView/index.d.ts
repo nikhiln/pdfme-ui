@@ -1,5 +1,5 @@
-import React from "react";
 import type { SchemaForUI } from "@pdfme/common";
+import React from "react";
 import type { SidebarProps } from "../../../../types";
 type DetailViewProps = Pick<SidebarProps, "size" | "schemas" | "schemasList" | "pageSize" | "changeSchemas" | "activeElements" | "deselectSchema"> & {
     activeSchema: SchemaForUI;
