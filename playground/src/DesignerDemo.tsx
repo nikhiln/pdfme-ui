@@ -3,7 +3,7 @@ import { generate } from "@pdfme/generator";
 import { Button } from "antd";
 import { Designer } from "pdfme-ui/";
 import { useEffect, useRef } from "react";
-import { utility } from "./plugins";
+import { checkboxField, textField, utility } from "./plugins";
 
 const DesignerDemo = () => {
   const designerRef = useRef<HTMLDivElement | null>(null);
@@ -11,6 +11,8 @@ const DesignerDemo = () => {
 
   const plugins = {
     ["Utilitiy"]: utility,
+    "Text Field": textField,
+    Checkbox: checkboxField,
   };
 
   useEffect(() => {

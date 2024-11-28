@@ -11,14 +11,16 @@
   },
   "dependencies": {
     "@pdfme/common": "^5.2.6",
-    "@pdfme/schemas": "^5.2.6",
     "@pdfme/generator": "^5.2.6",
+    "@pdfme/schemas": "^5.2.6",
+    "fontkit": "^2.0.4",
     "pdfme-ui": "file:../",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/fontkit": "^2.0.7",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
