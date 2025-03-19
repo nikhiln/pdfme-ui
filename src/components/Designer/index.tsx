@@ -162,6 +162,8 @@ const TemplateEditor = ({
     const [paddingTop, paddingRight, paddingBottom, paddingLeft] = isBlankPdf(template.basePdf) ? template.basePdf.padding : [0, 0, 0, 0];
     const pageSize = pageSizes[pageCursor];
 
+    console.log(defaultSchema);
+
     const newSchemaName = (prefix: string) => {
       let index = schemasList.reduce((acc, page) => acc + page.length, 1);
       let newName = prefix + index;
