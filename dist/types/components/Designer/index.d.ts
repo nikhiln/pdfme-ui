@@ -1,5 +1,5 @@
-import React from 'react';
-import { Template, DesignerProps, Size } from '@pdfme/common';
+import React from "react";
+import { Template, DesignerProps, Size } from "@pdfme/common";
 declare const TemplateEditor: ({ template, size, onSaveTemplate, onChangeTemplate, onPageCursorChange, }: Omit<DesignerProps, "domContainer"> & {
     size: Size;
     onSaveTemplate: (t: Template) => void;
