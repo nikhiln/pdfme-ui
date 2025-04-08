@@ -9,7 +9,7 @@ import {
   getFallbackFontName,
 } from "@pdfme/common";
 import { PDFDocument, PDFFont, TextAlignment } from "@pdfme/pdf-lib";
-import { checkbox, image, svg, text } from "@pdfme/schemas";
+import { checkbox, svg, text } from "@pdfme/schemas";
 import type { CheckboxSchema } from "@pdfme/schemas/dist/types/src/checkbox/types";
 import type { TextSchema } from "@pdfme/schemas/dist/types/src/text/types";
 import {
@@ -25,6 +25,8 @@ const getAlignment = (str: string) => {
   };
   return alignmentMap[str] || TextAlignment.Left;
 };
+
+const mm2px = (mm: number) => mm * 3.7795275591;
 
 export const utility: Plugin<TextSchema> = {
   ui: async (arg: UIRenderProps<TextSchema>) => {
@@ -244,8 +246,10 @@ const checkboxFieldPropPanel: PropPanel<CheckboxFieldSchema> = {
 };
 
 export const textField: Plugin<TextFieldSchema> = {
-  ui: (arg: UIRenderProps<CheckboxFieldSchema>) => {
+  ui: (arg: UIRenderProps<TextFieldSchema>) => {
     const { rootElement, schema } = arg;
+    const { width, height } = schema;
+
     const div = document.createElement("div");
     div.style.backgroundColor = schema.color ?? "transparent";
     div.style.width = "100%";
@@ -256,11 +260,10 @@ export const textField: Plugin<TextFieldSchema> = {
 
     const input = document.createElement("input");
     input.type = "text";
-    input.style.width = "200px";
-    input.style.height = "30px";
+    input.style.width = `${mm2px(width) - 1}px`;
+    input.style.height = `${mm2px(height) - 1}px`;
     input.style.border = "1px solid #ccc";
     input.style.borderRadius = "4px";
-    input.style.padding = "5px";
     input.setAttribute("readOnly", "true");
 
     div.appendChild(input);
@@ -314,8 +317,8 @@ export const textField: Plugin<TextFieldSchema> = {
     textField.addToPage(page, {
       x,
       y,
-      width,
-      height,
+      width: width - 1,
+      height: height - 1,
       textColor,
       backgroundColor,
       borderColor,

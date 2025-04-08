@@ -78,6 +78,7 @@ const PluginIcon = (props: PluginIconProps) => {
         fontSize: "12px",
       }}
       arrow={false}
+      placement="left"
     >
       <div
         style={{
