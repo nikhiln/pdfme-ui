@@ -221,10 +221,10 @@ Check this document: https://pdfme.com/docs/custom-schemas`);
       },
       ...(valueOptions.length && {
         value: {
-          title: "Options",
+          title: defaultSchema?.title ?? "Options",
           type: "string",
           widget: "select",
-          placeholder: "Select Option",
+          placeholder: defaultSchema?.placeholder ?? "Select Option",
           props: {
             options: valueOptions,
           },

@@ -398,3 +398,64 @@ export const signature = {
     },
   },
 };
+
+const checkmark = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" stroke="#111111" fill="#111111" stroke-linecap="round"></path></svg>`;
+
+export const checkmarkImage = {
+  ui: (arg: any) => svg.ui({ ...arg, content: checkmark, value: checkmark }),
+  pdf: async (arg: any) =>
+    svg.pdf({ ...arg, content: checkmark, value: checkmark }),
+  propPanel: {
+    ...text.propPanel,
+    defaultSchema: {
+      ...text.propPanel.defaultSchema,
+      type: "checkmark",
+      name: "checkmark",
+      alignment: "left",
+      readOnly: true,
+      editable: false,
+    },
+  },
+  icon: checkmark,
+};
+
+export const day: Plugin<TextSchema> = {
+  ui: text.ui,
+  pdf: (arg: PDFRenderProps<TextSchema>) => {
+    const format = arg.schema.value ?? "number";
+    const today = new Date();
+    const day =
+      format === "word"
+        ? new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(today)
+        : today.getDate();
+    return text.pdf({ ...arg, value: day.toString() });
+  },
+  propPanel: {
+    ...text.propPanel,
+    defaultSchema: {
+      ...text.propPanel.defaultSchema,
+      type: "text",
+      name: "day",
+      alignment: "left",
+      editable: false,
+      readOnly: true,
+      readOnlyValue: "TodayDay",
+      placeholder: "Select Format",
+      title: "Format",
+      valueOptions: [
+        {
+          label: "In Number",
+          value: "number",
+        },
+        {
+          label: "In Word",
+          value: "word",
+        },
+      ],
+    },
+  },
+  icon: `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 5.9c1.16 0 2.1.94 2.1 2.1s-.94 2.1-2.1 2.1S9.9 9.16 9.9 8s.94-2.1 2.1-2.1m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4m0 9c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4"></path>
+  <text x="19" y="12" font-size="11" text-anchor="middle" fill="inherit" font-weight="bold">1</text>
+</svg>`,
+};
